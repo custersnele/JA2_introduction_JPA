@@ -1,9 +1,8 @@
-package be.pxl.ja2.jpa.model;
+package be.pxl.ja2.jpa.model.magazines;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import java.util.ArrayList;
@@ -12,7 +11,7 @@ import java.util.List;
 @Entity
 public class Reader {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Long id;
 	@Column(unique = true)
 	private String subscriberNumber;

@@ -1,15 +1,16 @@
 package be.pxl.ja2.jpa;
 
-import be.pxl.ja2.jpa.model.School;
-import be.pxl.ja2.jpa.model.Student;
+import be.pxl.ja2.jpa.model.school.School;
+import be.pxl.ja2.jpa.model.school.Student;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-public class Demo6RelationsManyToOne {
+public class Demo8RelationsManyToOne {
 
 	public static void main(String[] args) {
 		EntityManagerFactory entityManagerFactory = null;
@@ -18,6 +19,7 @@ public class Demo6RelationsManyToOne {
 			entityManagerFactory = Persistence.createEntityManagerFactory("musicdb_pu");
 			entityManager = entityManagerFactory.createEntityManager();
 			EntityTransaction tx = entityManager.getTransaction();
+			cleanUpSchoolTable(entityManager);
 			tx.begin();
 			School school = new School("PXL");
 			entityManager.persist(school);
@@ -29,7 +31,7 @@ public class Demo6RelationsManyToOne {
 
 			entityManager.clear();
 
-			TypedQuery<School> query = entityManager.createNamedQuery("getSchoolByName", School.class);
+			TypedQuery<School> query = entityManager.createNamedQuery("schoolByName", School.class);
 			query.setParameter("name", "PXL");
 			School result = query.getSingleResult();
 			System.out.println("Number of students: " + result.getStudents().size());
@@ -41,5 +43,15 @@ public class Demo6RelationsManyToOne {
 				entityManagerFactory.close();
 			}
 		}
+	}
+
+	private static void cleanUpSchoolTable(EntityManager entityManager) {
+		entityManager.getTransaction().begin();
+		Query deleteQuery = entityManager.createQuery("DELETE FROM Student");
+		deleteQuery.executeUpdate();
+		deleteQuery = entityManager.createQuery("DELETE FROM School");
+		deleteQuery.executeUpdate();
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 	}
 }

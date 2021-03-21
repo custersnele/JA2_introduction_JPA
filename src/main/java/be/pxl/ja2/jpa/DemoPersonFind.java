@@ -4,12 +4,12 @@ import be.pxl.ja2.jpa.model.Person;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.swing.*;
 import java.awt.*;
+import java.util.Scanner;
 
-public class Opdracht4GetPerson {
+public class DemoPersonFind {
 
 	public static void main(String[] args) {
 		EntityManagerFactory entityManagerFactory = null;
@@ -17,14 +17,18 @@ public class Opdracht4GetPerson {
 		try {
 			entityManagerFactory = Persistence.createEntityManagerFactory("musicdb_pu");
 			entityManager = entityManagerFactory.createEntityManager();
-			EntityTransaction tx = entityManager.getTransaction();
-			tx.begin();
-			Person person = entityManager.find(Person.class, 3l);
-			System.out.println(person.getFirstName());
-			System.out.println(person.getComment());
-			System.out.println(person.getToken());
-			displayImage(person.getPicture());
-			tx.commit();
+			Scanner input = new Scanner(System.in);
+			System.out.println("Enter person id:");
+			long id = input.nextLong();
+			Person person = entityManager.find(Person.class, id);
+			if (person != null) {
+				System.out.println(person.getFirstName());
+				System.out.println(person.getComment());
+				System.out.println(person.getToken());
+				displayImage(person.getPicture());
+			} else {
+				System.out.println("No person found with id <" + id + ">");
+			}
 		}
 		finally {
 			if (entityManager != null) {

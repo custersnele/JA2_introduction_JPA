@@ -1,4 +1,4 @@
-package be.pxl.ja2.jpa.model;
+package be.pxl.ja2.jpa.model.patient;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +15,8 @@ public class Patient {
 	private Long id;
 	@Column(length = 40, nullable = false)
 	private String name;
-	@OneToOne(cascade = CascadeType.ALL)
-	private MedicalFile medicalFile;
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+	private MedicalRecord medicalRecord;
 
 	public Long getId() {
 		return id;
@@ -30,11 +30,11 @@ public class Patient {
 		this.name = name;
 	}
 
-	public MedicalFile getMedicalFile() {
-		return medicalFile;
+	public MedicalRecord getMedicalFile() {
+		return medicalRecord;
 	}
 
-	public void setMedicalFile(MedicalFile medicalFile) {
-		this.medicalFile = medicalFile;
+	public void setMedicalFile(MedicalRecord medicalRecord) {
+		this.medicalRecord = medicalRecord;
 	}
 }

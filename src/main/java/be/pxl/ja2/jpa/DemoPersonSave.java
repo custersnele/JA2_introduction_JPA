@@ -8,6 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public class Opdracht3SavePerson {
+public class DemoPersonSave {
 
 	public static void main(String[] args) {
 		EntityManagerFactory entityManagerFactory = null;
@@ -24,6 +25,7 @@ public class Opdracht3SavePerson {
 		try {
 			entityManagerFactory = Persistence.createEntityManagerFactory("musicdb_pu");
 			entityManager = entityManagerFactory.createEntityManager();
+			cleanUpPersonTable(entityManager);
 			Person person = new Person();
 			person.setFirstName("Sheldon");
 			person.setLastName("Cooper");
@@ -48,6 +50,14 @@ public class Opdracht3SavePerson {
 				entityManagerFactory.close();
 			}
 		}
+	}
+
+	private static void cleanUpPersonTable(EntityManager entityManager) {
+		entityManager.getTransaction().begin();
+		Query deleteFromPerson = entityManager.createQuery("DELETE FROM Person");
+		deleteFromPerson.executeUpdate();
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 	}
 
 	public static byte[] getImage(Path path) throws IOException {

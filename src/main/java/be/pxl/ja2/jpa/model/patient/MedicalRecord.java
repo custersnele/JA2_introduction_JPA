@@ -1,14 +1,13 @@
-package be.pxl.ja2.jpa.model;
+package be.pxl.ja2.jpa.model.patient;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class MedicalFile {
+public class MedicalRecord {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue
 	private Long id;
 	private double weight;
 	private int height;

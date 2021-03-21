@@ -1,22 +1,24 @@
 package be.pxl.ja2.jpa;
 
-import be.pxl.ja2.jpa.model.Magazine;
-import be.pxl.ja2.jpa.model.Reader;
+import be.pxl.ja2.jpa.model.magazines.Magazine;
+import be.pxl.ja2.jpa.model.magazines.Reader;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class Demo7RelationsManyToMany {
+public class Demo9RelationsManyToMany {
 	public static void main(String[] args) {
 		EntityManagerFactory entityManagerFactory = null;
 		EntityManager entityManager = null;
 		try {
 			entityManagerFactory = Persistence.createEntityManagerFactory("musicdb_pu");
 			entityManager = entityManagerFactory.createEntityManager();
+			cleanUpMagazineAndReaderTable(entityManager);
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
 			Magazine mag1 = new Magazine("Story");
@@ -50,5 +52,15 @@ public class Demo7RelationsManyToMany {
 				entityManagerFactory.close();
 			}
 		}
+	}
+
+	private static void cleanUpMagazineAndReaderTable(EntityManager entityManager) {
+		entityManager.getTransaction().begin();
+		Query deleteQuery = entityManager.createQuery("DELETE FROM Reader");
+		deleteQuery.executeUpdate();
+		deleteQuery = entityManager.createQuery("DELETE FROM Magazine");
+		deleteQuery.executeUpdate();
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 	}
 }

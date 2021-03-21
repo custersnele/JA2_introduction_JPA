@@ -1,15 +1,16 @@
 package be.pxl.ja2.jpa;
 
-import be.pxl.ja2.jpa.model.MedicalFile;
-import be.pxl.ja2.jpa.model.Patient;
+import be.pxl.ja2.jpa.model.patient.MedicalRecord;
+import be.pxl.ja2.jpa.model.patient.Patient;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
-public class Demo5RelationsOneToOne {
+public class Demo6RelationsOneToOneUnidirectional {
 
 	public static void main(String[] args) {
 		EntityManagerFactory entityManagerFactory = null;
@@ -17,12 +18,13 @@ public class Demo5RelationsOneToOne {
 		try {
 			entityManagerFactory = Persistence.createEntityManagerFactory("musicdb_pu");
 			entityManager = entityManagerFactory.createEntityManager();
+			cleanUpPatientTable(entityManager);
 			Patient patient = new Patient();
 			patient.setName("Sheldon Cooper");
-			MedicalFile medicalFile = new MedicalFile();
-			medicalFile.setHeight(186);
-			medicalFile.setWeight(65.7);
-			patient.setMedicalFile(medicalFile);
+			MedicalRecord medicalRecord = new MedicalRecord();
+			medicalRecord.setHeight(186);
+			medicalRecord.setWeight(65.7);
+			patient.setMedicalFile(medicalRecord);
 			EntityTransaction tx = entityManager.getTransaction();
 			tx.begin();
 			entityManager.persist(patient);
@@ -34,8 +36,7 @@ public class Demo5RelationsOneToOne {
 			query.setParameter("name", "Sheldon Cooper");
 			Patient result = query.getSingleResult();
 			System.out.println(patient.getMedicalFile().getHeight());
-			patient.getMedicalFile().setWeight(65.9);
-			entityManager.merge(patient);
+			result.getMedicalFile().setWeight(65.9);
 			tx.commit();
 		}
 		finally {
@@ -46,6 +47,16 @@ public class Demo5RelationsOneToOne {
 				entityManagerFactory.close();
 			}
 		}
+	}
+
+	private static void cleanUpPatientTable(EntityManager entityManager) {
+		entityManager.getTransaction().begin();
+		Query deleteFromPerson = entityManager.createQuery("DELETE FROM Patient");
+		deleteFromPerson.executeUpdate();
+		Query deleteFromMedicalRecord = entityManager.createQuery("DELETE FROM MedicalRecord");
+		deleteFromMedicalRecord.executeUpdate();
+		entityManager.getTransaction().commit();
+		entityManager.clear();
 	}
 
 }
